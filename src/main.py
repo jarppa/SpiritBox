@@ -6,47 +6,48 @@ import traceback
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('controller', help='Select controller [Keyboard | Remote | none]')
-parser.add_argument('--output', help='Audio output device')
+parser.add_argument('controller', help='Select controller')
 parser.add_argument('playlist', help='URI of input files') 
 
 args = parser.parse_args()
 
+from events.control_events import *
+from events.player_events import *
+
 from controllers import ControllerFactory
 from players.gstplayer import GstPlayer
 from sources import PlaylistFactory
-from players import PLAYER_EVENT_STARTED, \
-                PLAYER_EVENT_STOPPED, \
-                PLAYER_EVENT_PAUSED, \
-                PLAYER_EVENT_VOLUME_CHANGED, \
-                PLAYER_EVENT_TRACK_CHANGED, \
-                PLAYER_EVENT_TRACK_INFO, \
-                PLAYER_EVENT_ERROR
+
 control = None
 player = None
 playlist = None
-    
+
+
 def on_player_event(player_event):
     print("Player event: "+ str(player_event))
-    if player_event == PLAYER_EVENT_STARTED:
-        print("Current track: "+player.get_current_track())
+    if player_event == PLAYER_EVENT_TRACK_CHANGED:
+        print("Current track: " + player_event.data)
+    elif player_event == PLAYER_EVENT_VOLUME_CHANGED:
+        print("Volume: " + str(player_event.data))
 
-def handle_event(event):
-    print ("Received event: " +event)
-    if event == "EVENT_PLAY":
+
+def handle_control_event(event):
+    print ("Received control event: " + event[1])
+    if event == CONTROL_EVENT_PLAY:
         player.play()
-    elif event == "EVENT_STOP":
+    elif event == CONTROL_EVENT_STOP:
         player.stop()
-    elif event == "EVENT_PAUSE":
+    elif event == CONTROL_EVENT_PAUSE:
         player.pause()
-    elif event == "EVENT_NEXT":
+    elif event == CONTROL_EVENT_NEXT:
         player.next_track()
-    elif event == "EVENT_PREV":
+    elif event == CONTROL_EVENT_PREV:
         player.prev_track()
-    elif event == "EVENT_VOL_UP":
+    elif event == CONTROL_EVENT_VOL_UP:
         player.volume_up()
-    elif event == "EVENT_VOL_DOWN":
+    elif event == CONTROL_EVENT_VOL_DOWN:
         player.volume_down()
+
 
 def main():
     global player
@@ -62,7 +63,7 @@ def main():
         return 1
     
     try:
-        player = GstPlayer(args.output)
+        player = GstPlayer()
     except:
         print ("Cannot initialize player")
         traceback.print_exc()
@@ -86,10 +87,10 @@ def main():
     while(1):
         event = control.get_event()
         
-        if not event or event == "EVENT_QUIT":
+        if not event or event == CONTROL_EVENT_QUIT:
             break
         
-        handle_event(event)
+        handle_control_event(event)
     
     player.destroy()
     

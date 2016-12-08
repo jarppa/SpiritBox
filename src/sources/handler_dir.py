@@ -4,8 +4,10 @@ import os
 
 from sources import TrackSource
 
+
 def instantiate(from_uri):
     return DirSource(from_uri)
+
 
 class DirSource(TrackSource):
     def __init__(self, uri):
@@ -15,5 +17,3 @@ class DirSource(TrackSource):
         for f in os.listdir(self.path):
             if f.endswith(".mp3"):
                 self.sources.append(os.path.join(self.path,f))
-
-    

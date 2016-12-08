@@ -7,7 +7,8 @@ import sys
 
 sys.path.append(os.path.dirname(__file__))
 
-class Playlist():
+
+class Playlist:
     def __init__(self, source):
         self.position = -1
         self.source = source
@@ -35,7 +36,6 @@ class Playlist():
 
         return None
 
-    
     def __str__(self):
         return str(self.source.all_items())
     
@@ -59,13 +59,12 @@ class PlaylistFactory:
                 except:
                     print ("Cannot import module")
                     traceback.print_exc()
-                    
-    
+
     def get_available_types(self):
         return self.uri_handlers.keys()
     
     
-class TrackSource():
+class TrackSource:
     def __init__(self, uri):
         self.uri = uri
         self.sources = []
