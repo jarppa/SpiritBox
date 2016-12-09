@@ -26,13 +26,13 @@ playlist = None
 def on_player_event(player_event):
     print("Player event: "+ str(player_event))
     if player_event == PLAYER_EVENT_TRACK_CHANGED:
-        print("Current track: " + player_event.data)
+        print("Current track: " + str(player_event.data))
     elif player_event == PLAYER_EVENT_VOLUME_CHANGED:
         print("Volume: " + str(player_event.data))
 
 
 def handle_control_event(event):
-    print ("Received control event: " + event[1])
+    print ("Received control event: " + event.name)
     if event == CONTROL_EVENT_PLAY:
         player.play()
     elif event == CONTROL_EVENT_STOP:
@@ -47,6 +47,15 @@ def handle_control_event(event):
         player.volume_up()
     elif event == CONTROL_EVENT_VOL_DOWN:
         player.volume_down()
+    elif event == CONTROL_EVENT_LIST:
+        for i,t in enumerate(player.playlist.list()):
+            print(str(i) + ":"+ t)
+    elif event == CONTROL_EVENT_JUMP:
+        player.play_track(event.data)
+    elif event == CONTROL_EVENT_MUTE:
+        player.mute()
+    elif event == CONTROL_EVENT_UNMUTE:
+        player.unmute()
 
 
 def main():
@@ -81,7 +90,7 @@ def main():
     
     print (str(playlist))
     
-    player.set_playlist(playlist)
+    player.playlist = playlist
     player.set_event_callback(on_player_event)
     
     while(1):

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from events.control_events import *
+from events import Event
 
 from controllers import Controller
 
@@ -18,21 +19,29 @@ class ConsoleController(Controller):
         while 1:
             key = input("-->")
             if key == "quit" or key=="q":
-                return CONTROL_EVENT_QUIT
+                return Event(CONTROL_EVENT_QUIT)
             elif key == "next":
-                return CONTROL_EVENT_NEXT
+                return Event(CONTROL_EVENT_NEXT)
             elif key == "prev":
-                return CONTROL_EVENT_PREV
+                return Event(CONTROL_EVENT_PREV)
             elif key == "play":
-                return CONTROL_EVENT_PLAY
+                return Event(CONTROL_EVENT_PLAY)
             elif key == "stop":
-                return CONTROL_EVENT_STOP
+                return Event(CONTROL_EVENT_STOP)
             elif key == "pause":
-                return CONTROL_EVENT_PAUSE
+                return Event(CONTROL_EVENT_PAUSE)
             elif key == "volup" or key == "u":
-                return CONTROL_EVENT_VOL_UP
+                return Event(CONTROL_EVENT_VOL_UP)
             elif key == "voldown" or key == "d":
-                return CONTROL_EVENT_VOL_DOWN
+                return Event(CONTROL_EVENT_VOL_DOWN)
+            elif key == "list":
+                return Event(CONTROL_EVENT_LIST)
+            elif key.startswith("jump "):
+                return Event(CONTROL_EVENT_JUMP, int(key[5:]))
+            elif key == "mute" or key == "m":
+                return Event(CONTROL_EVENT_MUTE)
+            elif key == "unmute" or key == "n":
+                return Event(CONTROL_EVENT_UNMUTE)
             else:
                 print ("Unknown command")
     

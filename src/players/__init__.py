@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from events.player_events import PlayerEvent
+from events import Event
+from sources import Playlist
 
 #import threading
 
@@ -9,18 +10,27 @@ class Player:
     
     def __init__(self):
         self.event_cb = None
-        self.playlist = None
+        self._playlist = Playlist()
 
     def set_event_callback(self, event_cb):
         self.event_cb = event_cb
     
     def on_event(self, event, data=None):
         if self.event_cb:
-            self.event_cb(PlayerEvent(event, data))
-    
-    def set_playlist(self, playlist):
-        self.playlist = playlist
-    
+            self.event_cb(Event(event, data))
+
+    @property
+    def playlist(self):
+        return self._playlist
+
+    @playlist.setter
+    def playlist(self, playlist):
+        self._playlist = playlist
+
+    @playlist.getter
+    def playlist(self):
+        return self._playlist
+
     def destroy(self):
         pass
     
@@ -38,7 +48,7 @@ class Player:
     
     def next_track(self):
         pass
-    
+
     def volume_up(self):
         pass
     
@@ -48,7 +58,16 @@ class Player:
     def set_volume(self, volume):
         pass
 
+    def mute(self):
+        pass
+
+    def unmute(self):
+        pass
+
     def get_current_track(self):
         if self.playlist:
             return self.playlist.current()
         return None
+
+    def play_track(self, track):
+        pass

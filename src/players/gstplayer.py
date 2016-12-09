@@ -106,7 +106,12 @@ class GstPlayer(Player):
 
     def play(self):
         Player.play(self)
-        self.pipeline.set_state(Gst.State.PLAYING)
+        if not self.playlist.current():
+            t = self.playlist.next()
+            if t:
+                self._play_track(t)
+        else:
+            self.pipeline.set_state(Gst.State.PLAYING)
     
     def stop(self):
         Player.stop(self)
@@ -130,13 +135,18 @@ class GstPlayer(Player):
             self.stop()
             self._play_track(t)
 
+    def play_track(self, track):
+        t = self.playlist.track(track)
+        if t:
+            self._play_track(t)
+
     def volume_up(self):
         self.volume += 10
         
         if self.volume >= 100:
             self.volume = 100
             
-        self._set_volume()
+        self._set_volume(self.volume)
 
     def volume_down(self):
         self.volume -= 10
@@ -144,7 +154,7 @@ class GstPlayer(Player):
         if self.volume <= 0:
             self.volume = 0
             
-        self._set_volume()
+        self._set_volume(self.volume)
 
     def set_volume(self, volume):
         if isinstance(volume, float):
@@ -166,7 +176,13 @@ class GstPlayer(Player):
         else:
             raise ValueError
         
-        self._set_volume()
+        self._set_volume(self.volume)
+
+    def mute(self):
+        self._set_volume(0)
+
+    def unmute(self):
+        self._set_volume(self.volume)
 
     def get_current_track(self):
         return self.playlist.current()
@@ -177,6 +193,6 @@ class GstPlayer(Player):
         self.source.set_property('location',track)
         self.pipeline.set_state(Gst.State.PLAYING)
         
-    def _set_volume(self):
-        self.volctrl.set_property('volume', self.volume/100.0)
-        self.on_event(PLAYER_EVENT_VOLUME_CHANGED, self.volume)
+    def _set_volume(self, volume):
+        self.volctrl.set_property('volume', volume/100.0)
+        self.on_event(PLAYER_EVENT_VOLUME_CHANGED, volume)
