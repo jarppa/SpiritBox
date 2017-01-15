@@ -11,6 +11,8 @@ class Player:
     def __init__(self):
         self.event_cb = None
         self._playlist = Playlist()
+        self._playing = False
+        self._muted = False
 
     def set_event_callback(self, event_cb):
         self.event_cb = event_cb
@@ -30,6 +32,38 @@ class Player:
     @playlist.getter
     def playlist(self):
         return self._playlist
+
+    @property
+    def muted(self):
+        return self._muted
+
+    @muted.getter
+    def muted(self):
+        return self._muted
+
+    @muted.setter
+    def muted(self, m):
+        self._muted = m
+        if m:
+            self.mute()
+        else:
+            self.unmute()
+
+    @property
+    def playing(self):
+        return self._playing
+
+    @playing.getter
+    def playing(self):
+        return self._playing
+
+    @playing.setter
+    def playing(self, p):
+        self._playing = p
+        if p:
+            self.play()
+        else:
+            self.pause()
 
     def destroy(self):
         pass

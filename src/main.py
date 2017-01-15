@@ -37,8 +37,8 @@ def handle_control_event(event):
         player.play()
     elif event == CONTROL_EVENT_STOP:
         player.stop()
-    elif event == CONTROL_EVENT_PAUSE:
-        player.pause()
+    elif event == CONTROL_EVENT_PLAYPAUSE:
+        player.playing = not player.playing
     elif event == CONTROL_EVENT_NEXT:
         player.next_track()
     elif event == CONTROL_EVENT_PREV:
@@ -52,10 +52,8 @@ def handle_control_event(event):
             print(str(i) + ":"+ t)
     elif event == CONTROL_EVENT_JUMP:
         player.play_track(event.data)
-    elif event == CONTROL_EVENT_MUTE:
-        player.mute()
-    elif event == CONTROL_EVENT_UNMUTE:
-        player.unmute()
+    elif event == CONTROL_EVENT_MUTEUNMUTE:
+        player.muted = not player.muted
 
 
 def main():
@@ -96,10 +94,11 @@ def main():
     while(1):
         event = control.get_event()
         
-        if not event or event == CONTROL_EVENT_QUIT:
+        if event == CONTROL_EVENT_QUIT:
             break
-        
-        handle_control_event(event)
+
+        if event:
+            handle_control_event(event)
     
     player.destroy()
     
