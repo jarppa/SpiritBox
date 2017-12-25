@@ -7,9 +7,9 @@ from events import Event
 
 from controllers import Controller
 
-sys.path.append(".")
-
 from inputs import get_key, KEYS_AND_BUTTONS, EVENT_TYPES
+
+sys.path.append(".")
 
 PRESSED = 1
 RELEASED = 0
@@ -26,8 +26,7 @@ class KeyboardController(Controller):
         self.types = dict((k, v) for k, v in EVENT_TYPES)
         self.pressed = []
 
-    def get_event(self):
-        key = None
+    def event(self):
         while 1:
             keys = get_key()
             for key in keys:
@@ -48,7 +47,7 @@ class KeyboardController(Controller):
             return Event(CONTROL_EVENT_PREV)
         elif code == "KEY_PLAYPAUSE":
             return Event(CONTROL_EVENT_PLAYPAUSE)
-        elif code == "KEY_STOP":
+        elif code == "KEY_STOP" or code == "KEY_STOPCD":
             return Event(CONTROL_EVENT_STOP)
         elif code == "KEY_VOLUMEUP":
             return Event(CONTROL_EVENT_VOL_UP)
@@ -57,5 +56,4 @@ class KeyboardController(Controller):
         elif code == "KEY_MUTE":
             return Event(CONTROL_EVENT_MUTEUNMUTE)
         else:
-            print ("Unknown command")
-
+            print("Unknown command (%s)"% code)

@@ -3,7 +3,7 @@
 from events import Event
 from sources import Playlist
 
-#import threading
+# import threading
 
 
 class Player:
@@ -100,7 +100,7 @@ class Player:
 
     def get_current_track(self):
         if self.playlist:
-            return self.playlist.current()
+            return self.playlist.current_title()
         return None
 
     def play_track(self, track):

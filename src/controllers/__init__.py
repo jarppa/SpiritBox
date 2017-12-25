@@ -12,6 +12,7 @@ else:
 
 sys.path.append(CONTROLLERS_DIR)
 
+
 class ControllerFactory:
     def __init__(self):
         self.modules = {}
@@ -30,17 +31,18 @@ class ControllerFactory:
                     cls = importlib.import_module(f[:-3], os.path.basename(os.path.normpath(CONTROLLERS_DIR)))
                     self.modules[f[6:-3]] = cls
                 except:
-                    print ("Cannot import module")
+                    print("Cannot import module")
                     traceback.print_exc()
 
-class Controller():
+
+class Controller:
     def __init__(self):
         pass
 
     '''
         Blocking event wait
     '''
-    def get_event(self):
+    def event(self):
         return None
 
     '''

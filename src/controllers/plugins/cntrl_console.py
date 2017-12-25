@@ -13,12 +13,11 @@ def instantiate():
 class ConsoleController(Controller):
     def __init__(self):
         Controller.__init__(self)
-        
-    def get_event(self):
-        key = None
+
+    def event(self):
         while 1:
             key = input("-->")
-            if key == "quit" or key=="q":
+            if key == "quit" or key == "q":
                 return Event(CONTROL_EVENT_QUIT)
             elif key == "next":
                 return Event(CONTROL_EVENT_NEXT)
@@ -37,11 +36,16 @@ class ConsoleController(Controller):
             elif key == "list":
                 return Event(CONTROL_EVENT_LIST)
             elif key.startswith("jump "):
-                return Event(CONTROL_EVENT_JUMP, int(key[5:]))
+                try:
+                    index = int(key[5:])
+                except ValueError:
+                    print("Invalid index")
+                    continue
+
+                return Event(CONTROL_EVENT_JUMP, index)
             elif key == "mute" or key == "m":
                 return Event(CONTROL_EVENT_MUTE)
             elif key == "unmute" or key == "n":
                 return Event(CONTROL_EVENT_UNMUTE)
             else:
-                print ("Unknown command")
-    
+                print("Unknown command")

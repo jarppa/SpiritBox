@@ -22,13 +22,13 @@ mainloop = GObject.MainLoop()
 
 
 class GstThread(threading.Thread):
-    def __init__(self, mainloop):
+    def __init__(self, mainlop):
         threading.Thread.__init__(self)
-        self.mainloop = mainloop
+        self.mainloop = mainlop
         
     def run(self):
         self.mainloop.run()
-        print ("GST mainloop finished")
+        print("GST mainloop finished")
 
 
 class GstPlayer(Player):
@@ -40,34 +40,57 @@ class GstPlayer(Player):
         self.pipeline = Gst.Pipeline()
         
         self.source = Gst.ElementFactory.make("filesrc", "source")
-        self.decoder = Gst.ElementFactory.make("mad", "decoder")
+        self.decoder = Gst.ElementFactory.make("decodebin", "decoder")
         self.convert = Gst.ElementFactory.make('audioconvert', 'convert')
         self.volctrl = Gst.ElementFactory.make('volume', "volume")
         self.output = Gst.ElementFactory.make("autoaudiosink", "sink")
 
-        if self.source and self.decoder and self.convert and self.output and self.volctrl:
-            self.pipeline.add(self.source)
-            self.pipeline.add(self.decoder)
-            self.pipeline.add(self.convert)
-            self.pipeline.add(self.volctrl)
-            self.pipeline.add(self.output)
+        if not self.source:
+            print("Cannot initialize audio source")
+            return
+        if not self.decoder:
+            print("Cannot initialize audio decoder")
+            return
+        if not self.convert:
+            print("Cannot initialize audio convert")
+            return
+        if not self.output:
+            print("Cannot initialize audio output")
+            return
+        if not self.volctrl:
+            print("Cannot initialize audio volume control")
+            return
+
+        self.pipeline.add(self.source)
+        self.pipeline.add(self.decoder)
+        self.pipeline.add(self.convert)
+        self.pipeline.add(self.volctrl)
+        self.pipeline.add(self.output)
             
-            self.source.link(self.decoder)
-            self.decoder.link(self.convert)
-            self.convert.link(self.volctrl)
-            self.volctrl.link(self.output)
+        self.source.link(self.decoder)
+        self.decoder.link(self.convert)
+        self.convert.link(self.volctrl)
+        self.volctrl.link(self.output)
+
+        self.decoder.connect("pad-added", self._new_decoded_pad_cb)
+
+        bus = self.pipeline.get_bus()
+        bus.add_signal_watch()
+        bus.connect("message", self._on_bus_message)
         
-            bus = self.pipeline.get_bus()
-            bus.add_signal_watch()
-            bus.connect("message", self._on_bus_message)
+        self.volctrl.set_property('volume', self.volume/100.0)
         
-            self.volctrl.set_property('volume', self.volume/100.0)
+        self.pipeline.set_state(Gst.State.READY)
         
-            self.pipeline.set_state(Gst.State.READY)
+        self.mainloop_thread = GstThread(mainloop)
         
-            self.mainloop_thread = GstThread(mainloop)
-        
-            self.mainloop_thread.start()
+        self.mainloop_thread.start()
+
+    def _new_decoded_pad_cb(self, dbin, pad):
+
+        if "audio" not in pad.get_current_caps().to_string():
+            return
+        pad.link(self.convert.get_static_pad("sink"))
 
     def _on_bus_message(self, bus, message):
         t = message.type
@@ -76,7 +99,7 @@ class GstPlayer(Player):
             self.next_track()
 
         elif t == Gst.MessageType.ERROR:
-            print (str(message.parse_error()))
+            print(str(message.parse_error()))
             self.pipeline.set_state(Gst.State.NULL)
             self.on_event(PLAYER_EVENT_ERROR, message.parse_error())
         
@@ -106,7 +129,7 @@ class GstPlayer(Player):
 
     def play(self):
         Player.play(self)
-        if not self.playlist.current():
+        if self.playlist.current_index() == -1:
             t = self.playlist.next()
             if t:
                 self._play_track(t)
@@ -185,14 +208,15 @@ class GstPlayer(Player):
         self._set_volume(self.volume)
 
     def get_current_track(self):
-        return self.playlist.current()
+        return self.playlist.current_title()
     
     def _play_track(self, track):
-        print ("Play: "+ track)
+        print("Play: " + track)
         self.pipeline.set_state(Gst.State.READY)
-        self.source.set_property('location',track)
+        self.source.set_property('location', track)
         self.pipeline.set_state(Gst.State.PLAYING)
         
     def _set_volume(self, volume):
-        self.volctrl.set_property('volume', volume/100.0)
-        self.on_event(PLAYER_EVENT_VOLUME_CHANGED, volume)
+        if self.volctrl:
+            self.volctrl.set_property('volume', volume/100.0)
+            self.on_event(PLAYER_EVENT_VOLUME_CHANGED, volume)

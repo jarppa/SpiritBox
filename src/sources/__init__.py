@@ -61,13 +61,16 @@ class Playlist:
         else:
             return None
     
-    def current(self):
+    def current_title(self):
         if self.position >= 0:
             return self.source.at(self.position)
 
         return None
 
-    def list(self):
+    def current_index(self):
+        return self.position
+
+    def list_titles(self):
         return self.source.all_items()
 
     def __str__(self):
@@ -87,11 +90,11 @@ class PlaylistFactory:
         for f in os.listdir(os.path.dirname(__file__)):
             if f.startswith("source_") and f.endswith(".py"):
                 try:
-                    cls = importlib.import_module(f[:-3],"sources")
+                    cls = importlib.import_module(f[:-3], "sources")
                     self.uri_handlers[f[7:-3]] = cls
                     
                 except:
-                    print ("Cannot import module")
+                    print("Cannot import module")
                     traceback.print_exc()
 
     def get_available_types(self):

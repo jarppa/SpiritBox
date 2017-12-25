@@ -4,13 +4,6 @@ import sys
 import argparse
 import traceback
 
-parser = argparse.ArgumentParser()
-
-parser.add_argument('controller', help='Select controller')
-parser.add_argument('playlist', help='URI of input files') 
-
-args = parser.parse_args()
-
 from events.control_events import *
 from events.player_events import *
 
@@ -18,13 +11,20 @@ from controllers import ControllerFactory
 from players.gstplayer import GstPlayer
 from sources import PlaylistFactory
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('controller', help='Select controller')
+parser.add_argument('playlist', help='URI of input files') 
+
+args = parser.parse_args()
+
 control = None
 player = None
 playlist = None
 
 
 def on_player_event(player_event):
-    print("Player event: "+ str(player_event))
+    print("Player event: " + str(player_event))
     if player_event == PLAYER_EVENT_TRACK_CHANGED:
         print("Current track: " + str(player_event.data))
     elif player_event == PLAYER_EVENT_VOLUME_CHANGED:
@@ -32,9 +32,11 @@ def on_player_event(player_event):
 
 
 def handle_control_event(event):
-    print ("Received control event: " + event.name)
+    print("Received control event: " + event.name)
     if event == CONTROL_EVENT_PLAY:
         player.play()
+    elif event == CONTROL_EVENT_PAUSE:
+        player.pause()
     elif event == CONTROL_EVENT_STOP:
         player.stop()
     elif event == CONTROL_EVENT_PLAYPAUSE:
@@ -48,10 +50,19 @@ def handle_control_event(event):
     elif event == CONTROL_EVENT_VOL_DOWN:
         player.volume_down()
     elif event == CONTROL_EVENT_LIST:
-        for i,t in enumerate(player.playlist.list()):
-            print(str(i) + ":"+ t)
+        for i, t in enumerate(player.playlist.list_titles()):
+            if i == player.playlist.current_index():
+                print("==> " + str(i+1) + ":" + t)
+            else:
+                print(str(i+1) + ":" + t)
     elif event == CONTROL_EVENT_JUMP:
-        player.play_track(event.data)
+        try:
+            track_index = int(event.data)-1
+        except:
+            print("Invalid jump data")
+            return
+        if track_index >= 0:
+            player.play_track(track_index)
     elif event == CONTROL_EVENT_MUTEUNMUTE:
         player.muted = not player.muted
 
@@ -62,38 +73,38 @@ def main():
     global playlist
     try:
         cf = ControllerFactory()
-        print (cf.get_available_types())
+        print(cf.get_available_types())
         control = cf.create(args.controller)
     except:
-        print ("Cannot initialize controller")
+        print("Cannot initialize controller")
         traceback.print_exc()
         return 1
     
     try:
         player = GstPlayer()
     except:
-        print ("Cannot initialize player")
+        print("Cannot initialize player")
         traceback.print_exc()
         return 1
     
     try:
         pf = PlaylistFactory()
-        print (pf.get_available_types())
+        print(pf.get_available_types())
         playlist = pf.create(args.playlist)
 
     except:
-        print ("Cannot initialize playlist")
+        print("Cannot initialize playlist")
         traceback.print_exc()
         return 1
     
-    print (str(playlist))
+    print(str(playlist))
     
     player.playlist = playlist
     player.set_event_callback(on_player_event)
     
-    while(1):
-        event = control.get_event()
-        
+    while 1:
+        event = control.event()
+
         if event == CONTROL_EVENT_QUIT:
             break
 
