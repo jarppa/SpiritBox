@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-import os
-import traceback
-import importlib
-
 from plugin_factory import PluginFactory
 
 from events.player_events import PlayerEvent

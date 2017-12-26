@@ -1,0 +1,9 @@
+syntax = "proto3";
+package spiritbox;
+
+// [START messages]
+message ControlMessage {
+  uint32 event = 1;
+  string data = 2;
+}
+// [END messages]
