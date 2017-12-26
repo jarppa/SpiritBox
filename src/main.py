@@ -148,9 +148,10 @@ def main():
 
         if event:
             handle_control_event(event)
-    
+
+    control.close()
     player.destroy()
-    
+
     return 0
 
 

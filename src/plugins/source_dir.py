@@ -7,7 +7,7 @@ from sources import TrackSource
 
 def instantiate(args):
     return DirSource(args)
-    return Playlist(self.uri_handlers[from_uri.split(':')[0]].instantiate(from_uri))
+
 
 class DirSource(TrackSource):
     def __init__(self, path):

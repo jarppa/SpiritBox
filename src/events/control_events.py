@@ -19,6 +19,38 @@ CONTROL_EVENT_UNMUTE = (12, "unmute")
 CONTROL_EVENT_PLAYPAUSE = (13, "playpause")
 CONTROL_EVENT_MUTEUNMUTE = (14, "muteunmute")
 
+control_events = (CONTROL_EVENT_PLAY,
+                  CONTROL_EVENT_STOP,
+                  CONTROL_EVENT_PAUSE,
+                  CONTROL_EVENT_NEXT,
+                  CONTROL_EVENT_PREV,
+                  CONTROL_EVENT_VOL_UP,
+                  CONTROL_EVENT_VOL_DOWN,
+                  CONTROL_EVENT_QUIT,
+                  CONTROL_EVENT_LIST,
+                  CONTROL_EVENT_JUMP,
+                  CONTROL_EVENT_MUTE,
+                  CONTROL_EVENT_UNMUTE,
+                  CONTROL_EVENT_PLAYPAUSE,
+                  CONTROL_EVENT_MUTEUNMUTE)
+
+control_event_id_map = dict((i+1, v) for i, v in enumerate(control_events))
+
+'''control_event_id_map = {CONTROL_EVENT_PLAY[0]: CONTROL_EVENT_PLAY,
+                        CONTROL_EVENT_STOP[0]: CONTROL_EVENT_STOP,
+                        CONTROL_EVENT_PAUSE[0]: CONTROL_EVENT_PAUSE,
+                        CONTROL_EVENT_NEXT[0]: CONTROL_EVENT_NEXT,
+                        CONTROL_EVENT_PREV[0]: CONTROL_EVENT_PREV,
+                        CONTROL_EVENT_VOL_UP[0]: CONTROL_EVENT_VOL_UP,
+                        CONTROL_EVENT_VOL_DOWN[0]: CONTROL_EVENT_VOL_DOWN,
+                        CONTROL_EVENT_QUIT[0]: CONTROL_EVENT_QUIT,
+                        CONTROL_EVENT_LIST[0]: CONTROL_EVENT_LIST,
+                        CONTROL_EVENT_JUMP[0]: CONTROL_EVENT_JUMP,
+                        CONTROL_EVENT_MUTE[0]: CONTROL_EVENT_MUTE,
+                        CONTROL_EVENT_UNMUTE[0]: CONTROL_EVENT_UNMUTE,
+                        CONTROL_EVENT_PLAYPAUSE[0]: CONTROL_EVENT_PLAYPAUSE,
+                        CONTROL_EVENT_MUTEUNMUTE[0]: CONTROL_EVENT_MUTEUNMUTE}'''
+
 
 class ControlEvent(Event):
     def __init__(self, event, data=None):
