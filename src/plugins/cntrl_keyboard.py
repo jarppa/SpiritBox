@@ -3,7 +3,6 @@
 import sys
 
 from events.control_events import *
-from events import Event
 
 from controllers import Controller
 
@@ -15,7 +14,7 @@ PRESSED = 1
 RELEASED = 0
 
 
-def instantiate():
+def instantiate(args):
     return KeyboardController()
 
 
@@ -26,8 +25,7 @@ class KeyboardController(Controller):
         self.types = dict((k, v) for k, v in EVENT_TYPES)
         self.pressed = []
 
-    def get_event(self):
-        key = None
+    def event(self):
         while 1:
             keys = get_key()
             for key in keys:
@@ -41,21 +39,20 @@ class KeyboardController(Controller):
 
     def __handle_key(self, code):
         if code == "KEY_ESC":
-            return Event(CONTROL_EVENT_QUIT)
+            return ControlEvent(CONTROL_EVENT_QUIT)
         elif code == "KEY_NEXTSONG":
-            return Event(CONTROL_EVENT_NEXT)
+            return ControlEvent(CONTROL_EVENT_NEXT)
         elif code == "KEY_PREVIOUSSONG":
-            return Event(CONTROL_EVENT_PREV)
+            return ControlEvent(CONTROL_EVENT_PREV)
         elif code == "KEY_PLAYPAUSE":
-            return Event(CONTROL_EVENT_PLAYPAUSE)
-        elif code == "KEY_STOP":
-            return Event(CONTROL_EVENT_STOP)
+            return ControlEvent(CONTROL_EVENT_PLAYPAUSE)
+        elif code == "KEY_STOP" or code == "KEY_STOPCD":
+            return ControlEvent(CONTROL_EVENT_STOP)
         elif code == "KEY_VOLUMEUP":
-            return Event(CONTROL_EVENT_VOL_UP)
+            return ControlEvent(CONTROL_EVENT_VOL_UP)
         elif code == "KEY_VOLUMEDOWN":
-            return Event(CONTROL_EVENT_VOL_DOWN)
+            return ControlEvent(CONTROL_EVENT_VOL_DOWN)
         elif code == "KEY_MUTE":
-            return Event(CONTROL_EVENT_MUTEUNMUTE)
+            return ControlEvent(CONTROL_EVENT_MUTEUNMUTE)
         else:
-            print ("Unknown command")
-
+            print("Unknown command (%s)" % code)

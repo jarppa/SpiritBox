@@ -2,7 +2,8 @@
 
 
 class Event:
-    def __init__(self, event, data=None):
+    def __init__(self, ecls, event, data=None):
+        self.ecls = ecls
         self.event = event
         self.data = data
 
@@ -13,6 +14,10 @@ class Event:
     @property
     def name(self):
         return self.event[1]
+
+    @property
+    def event_class(self):
+        return self.ecls
 
     def __str__(self):
         return self.event[1]

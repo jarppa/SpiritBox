@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 
-import os
-import traceback
-import importlib
-import sys
-
-sys.path.append(os.path.dirname(__file__))
+from plugin_factory import PluginFactory
 
 
 class TrackSource:
@@ -24,8 +19,8 @@ class TrackSource:
     def size(self):
         return len(self.all_items())
 
-    def contains(self, item):
-        return item in self.tracks
+    def contains_title(self, title):
+        return title in self.tracks
 
 
 class Playlist:
@@ -41,7 +36,7 @@ class Playlist:
             self.position = t
             return self.source.at(t)
         elif isinstance(t, str):
-            if self.source.contains(t):
+            if self.source.contains_title(t):
                 self.position = self.source.index(t)
                 return t
 
@@ -61,38 +56,23 @@ class Playlist:
         else:
             return None
     
-    def current(self):
+    def current_title(self):
         if self.position >= 0:
             return self.source.at(self.position)
 
         return None
 
-    def list(self):
+    def current_index(self):
+        return self.position
+
+    def list_titles(self):
         return self.source.all_items()
 
     def __str__(self):
         return str(self.source.all_items())
     
 
-class PlaylistFactory:
+class SourceFactory(PluginFactory):
     
     def __init__(self):
-        self.uri_handlers = {}
-        self._load_modules()
-        
-    def create(self, from_uri):
-        return Playlist(self.uri_handlers[from_uri.split(':')[0]].instantiate(from_uri))
-    
-    def _load_modules(self):
-        for f in os.listdir(os.path.dirname(__file__)):
-            if f.startswith("source_") and f.endswith(".py"):
-                try:
-                    cls = importlib.import_module(f[:-3],"sources")
-                    self.uri_handlers[f[7:-3]] = cls
-                    
-                except:
-                    print ("Cannot import module")
-                    traceback.print_exc()
-
-    def get_available_types(self):
-        return self.uri_handlers.keys()
+        PluginFactory.__init__(self, "source_")
