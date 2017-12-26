@@ -63,6 +63,12 @@ def handle_control_event(event):
         player.volume_up()
     elif event == CONTROL_EVENT_VOL_DOWN:
         player.volume_down()
+    elif event == CONTROL_EVENT_MUTE:
+        player.mute()
+    elif event == CONTROL_EVENT_UNMUTE:
+        player.unmute()
+    elif event == CONTROL_EVENT_MUTEUNMUTE:
+        player.muted(not player.muted())
     elif event == CONTROL_EVENT_LIST:
         for i, t in enumerate(player.playlist.list_titles()):
             if i == player.playlist.current_index():

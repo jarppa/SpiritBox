@@ -166,6 +166,8 @@ class GstPlayer(Player):
         t = self.playlist.track(track)
         if t:
             self._play_track(t)
+        else:
+            print("Invalid track: %s" % track)
 
     def volume_up(self):
         self.volume += 10

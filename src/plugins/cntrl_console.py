@@ -13,6 +13,9 @@ class ConsoleController(Controller):
     def __init__(self):
         Controller.__init__(self)
 
+    def print_commands(self):
+        print("quit | q\nnext\nprev\nplay\nstop\npause\nvolup | u\nvoldown | d\nlist\njump\nmute | m\nunmute | n\nhelp | ?\n")
+
     def event(self):
         while 1:
             key = input("-->")
@@ -46,5 +49,8 @@ class ConsoleController(Controller):
                 return ControlEvent(CONTROL_EVENT_MUTE)
             elif key == "unmute" or key == "n":
                 return ControlEvent(CONTROL_EVENT_UNMUTE)
+            elif key == "?" or key == "help":
+                self.print_commands()
+                continue
             else:
-                print("Unknown command")
+                print("Unknown command. Try \"help\"")
