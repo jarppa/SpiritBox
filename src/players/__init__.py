@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
-from events import Event
+import os
+import traceback
+import importlib
+
+from plugin_factory import PluginFactory
+
+from events.player_events import PlayerEvent
 from sources import Playlist
 
 # import threading
@@ -19,7 +25,7 @@ class Player:
     
     def on_event(self, event, data=None):
         if self.event_cb:
-            self.event_cb(Event(event, data))
+            self.event_cb(PlayerEvent(event, data))
 
     @property
     def playlist(self):
@@ -105,3 +111,8 @@ class Player:
 
     def play_track(self, track):
         pass
+
+
+class PlayerFactory(PluginFactory):
+    def __init__(self):
+        PluginFactory.__init__(self, "player_")

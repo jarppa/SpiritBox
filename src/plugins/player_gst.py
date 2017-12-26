@@ -21,6 +21,10 @@ Gst.init(None)
 mainloop = GObject.MainLoop()
 
 
+def instantiate(args):
+    return GstPlayer()
+
+
 class GstThread(threading.Thread):
     def __init__(self, mainlop):
         threading.Thread.__init__(self)

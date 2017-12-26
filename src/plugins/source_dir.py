@@ -5,14 +5,14 @@ import os
 from sources import TrackSource
 
 
-def instantiate(from_uri):
-    return DirSource(from_uri)
-
+def instantiate(args):
+    return DirSource(args)
+    return Playlist(self.uri_handlers[from_uri.split(':')[0]].instantiate(from_uri))
 
 class DirSource(TrackSource):
-    def __init__(self, uri):
+    def __init__(self, path):
         TrackSource.__init__(self)
-        self.path = uri[5:]  # dir:/
+        self.path = path
         
         for f in os.listdir(self.path):
             if f.endswith(".mp3"):
