@@ -20,7 +20,7 @@ class Event:
         return self.ecls
 
     def __str__(self):
-        return self.event[1]
+        return self.event[1] + " (" + str(self.data) + ")"
 
     def __eq__(self, other):
 

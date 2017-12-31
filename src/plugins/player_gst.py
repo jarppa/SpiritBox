@@ -32,7 +32,7 @@ class GstThread(threading.Thread):
         
     def run(self):
         self.mainloop.run()
-        print("GST mainloop finished")
+        # print("GST mainloop finished")
 
 
 class GstPlayer(Player):
@@ -50,19 +50,19 @@ class GstPlayer(Player):
         self.output = Gst.ElementFactory.make("autoaudiosink", "sink")
 
         if not self.source:
-            print("Cannot initialize audio source")
+            # print("Cannot initialize audio source")
             return
         if not self.decoder:
-            print("Cannot initialize audio decoder")
+            # print("Cannot initialize audio decoder")
             return
         if not self.convert:
-            print("Cannot initialize audio convert")
+            # print("Cannot initialize audio convert")
             return
         if not self.output:
-            print("Cannot initialize audio output")
+            # print("Cannot initialize audio output")
             return
         if not self.volctrl:
-            print("Cannot initialize audio volume control")
+            # print("Cannot initialize audio volume control")
             return
 
         self.pipeline.add(self.source)
@@ -166,8 +166,8 @@ class GstPlayer(Player):
         t = self.playlist.track(track)
         if t:
             self._play_track(t)
-        else:
-            print("Invalid track: %s" % track)
+        # else:
+        #    print("Invalid track: %s" % track)
 
     def volume_up(self):
         self.volume += 10
@@ -217,7 +217,7 @@ class GstPlayer(Player):
         return self.playlist.current_title()
     
     def _play_track(self, track):
-        print("Play: " + track)
+        # print("Play: " + track)
         self.pipeline.set_state(Gst.State.READY)
         self.source.set_property('location', track)
         self.pipeline.set_state(Gst.State.PLAYING)
