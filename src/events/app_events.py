@@ -10,6 +10,8 @@ APP_EVENT_SHUTDOWN = (3, "Shutdown")
 APP_EVENT_ERROR = (4, "Error")
 APP_EVENT_INDICATION = (5, "Indication")
 
+APP_INDICATION_PLAYLIST = (1, "Playlist")
+
 
 class AppIndication:
     def __init__(self, indication_type, data=None):

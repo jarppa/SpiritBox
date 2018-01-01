@@ -96,7 +96,7 @@ def on_control_event(event):
                     print(str(i+1) + ":" + t)
 
         send_event(AppEvent(APP_EVENT_INDICATION,
-                            AppIndication("playlist",
+                            AppIndication(APP_INDICATION_PLAYLIST,
                                           player.playlist.list_titles())))
     elif event == CONTROL_EVENT_JUMP:
         try:
@@ -196,6 +196,9 @@ def main():
             on_control_event(event)
 
     send_event(AppEvent(APP_EVENT_SHUTDOWN))
+
+    for e in event_interfaces:
+        e.close()
 
     control.close()
     player.destroy()

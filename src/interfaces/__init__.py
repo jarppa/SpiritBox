@@ -10,6 +10,9 @@ class EventInterface:
     def post_event(self, event):
         pass
 
+    def close(self):
+        pass
+
 
 class EventOutFactory(PluginFactory):
     def __init__(self):

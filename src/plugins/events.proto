@@ -1,0 +1,62 @@
+syntax = "proto3";
+package spiritbox;
+
+message GenericEvent {
+    uint32 code = 1;
+    string data = 2;
+}
+
+// [START messages]
+message AppEvent {
+
+    enum AppEventType {
+        GENERIC = 0;
+        INDICATION = 1;
+    }
+
+    message AppIndication {
+
+        enum AppIndicationType {
+            APP_INDICATION_PLAYLIST = 0;
+        }
+
+        message PlaylistTitle
+        {
+            string name = 1;
+        }
+
+        message Playlist {
+            repeated PlaylistTitle titles = 1;
+        }
+
+        AppIndicationType type = 1;
+        oneof ind {
+            Playlist playlist = 2;
+        }
+    }
+
+    AppEventType type = 1;
+
+    oneof event {
+        GenericEvent generic = 3;
+        AppIndication indication = 4;
+    }
+}
+
+message EventMessage {
+    enum EventType {
+        APP_EVENT = 0;
+        PLAYER_EVENT = 1;
+        CONTROL_EVENT = 2;
+        SOURCE_EVENT = 3;
+    }
+
+    EventType type = 1;
+    oneof event {
+        GenericEvent control_event = 2;
+        GenericEvent player_event = 3;
+        AppEvent app_event = 4;
+        GenericEvent source_event = 5;
+    }
+}
+// [END messages]
